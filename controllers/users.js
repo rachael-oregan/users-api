@@ -1,9 +1,6 @@
 var User = require('../models/user');
 var express = require('express');
 var router = express.Router();
-var bodyParser = require('body-parser');
-var logger = require('winston');
-
 
 // GET /users
 // Get a list of users
@@ -44,22 +41,39 @@ router.get('/:id', function(req, res) {
 router.delete('/:id', function(req, res) {
   User.findOne(req.params.id, function(err, user) {
     if (err) {
-      return res.status(404).json({
-        error: "Error reading user: " + err
+      return res.status(500).json({
+        error: "Error finding user: " + err
       });
     }
     if (!user) {
       return res.status(404).send(err);
     }
-    res.json(user);
     user.remove(function(err) {
       if (err) {
-        return res.status(404).json({
+        return res.status(500).json({
           error: "Error deleting user: " + err
         });
       }
     });
   });
 });
+
+// PUT /users/:id
+// Update a user
+router.put('/:id', function(req, res) {
+  User.update(req.params.id, req.body, function(err, user) {
+    if (err) {
+      return res.status(500).json({
+        error: "Error finding user: " + err
+      });
+    }
+    if (!user) {
+      return res.status(404).send("User does not exist: " + err);
+    }
+    return res.json(user);
+  });
+});
+
+
 
 module.exports = router;
