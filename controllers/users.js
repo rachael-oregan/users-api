@@ -13,16 +13,14 @@ router.get('/', function(req, res) {
       });
     }
 
-    res.json(users);
+    return res.json(users);
   });
 });
 
 // GET /users/:id
 // Get a user by ID
 router.get('/:id', function(req, res) {
-  User.findOne({
-    _id: req.params.id
-  }, function(err, user) {
+  User.findOne({_id: req.params.id}, function(err, user) {
     if (err) {
       return res.status(500).json({
         error: "Error reading user: " + err
@@ -33,7 +31,7 @@ router.get('/:id', function(req, res) {
       return res.status(404).end();
     }
 
-    res.json(user);
+    return res.json(user);
   });
 });
 
@@ -81,7 +79,7 @@ router.post('/', bodyParser(), function(req, res) {
         error: "Error creating user: " + err
       });
     }
-    res.json(user);
+    return res.json(user);
   });
 });
 
