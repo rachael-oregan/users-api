@@ -74,6 +74,21 @@ router.put('/:id', function(req, res) {
   });
 });
 
+// POST /users
+// Create a user
+router.post('/', function(req, res) {
+  User.save(req.body, function(err, user) {
+    if (err) {
+      return res.status(500).json({
+        error: "Error creating user: " + err
+      });
+    }
+    if (!user) {
+      return res.status(404).send("User does not exist: " + err);
+    }
+    return res.json(user);
+  });
+});
 
 
 module.exports = router;
