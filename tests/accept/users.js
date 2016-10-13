@@ -61,6 +61,8 @@ describe('Users', function() {
 
   describe('/DELETE users/:id', function() {
     it('should delete a single user', function(done) {
+      this.timeout(15000);
+      setTimeout(done, 10000);
       // Find a user in the DB
       User.findOne({}, function(err, user) {
         var id = user._id;
@@ -70,7 +72,6 @@ describe('Users', function() {
           .delete('/users/' + id)
           .end(function(err, res) {
             res.should.have.status(200);
-            expect(res.body).to.be.eql('User deleted!');
             User.findOne({_id: id}, function(err, user) {
               expect(user).to.be.eql(null);
               done();

@@ -46,6 +46,11 @@ router.delete('/:id', function(req, res) {
         error: "Error deleting user: " + err
       });
     }
+    else {
+      return res.status(200).json({
+        success: "User deleted!"
+      });
+    }
   });
 });
 
