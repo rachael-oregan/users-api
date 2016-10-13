@@ -1,6 +1,7 @@
 var User = require('../models/user');
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
 
 // GET /users
 // Get a list of users
@@ -39,30 +40,20 @@ router.get('/:id', function(req, res) {
 // DELETE /users/:id
 // Delete a user by id
 router.delete('/:id', function(req, res) {
-  User.findOne(req.params.id, function(err, user) {
+  User.findByIdAndRemove({_id: req.params.id}, function(err) {
     if (err) {
       return res.status(500).json({
-        error: "Error finding user: " + err
+        error: "Error deleting user: " + err
       });
     }
-    if (!user) {
-      return res.status(404).send(err);
-    }
-    user.remove(function(err) {
-      if (err) {
-        return res.status(500).json({
-          error: "Error deleting user: " + err
-        });
-      }
-      return res.body("User deleted!");
-    });
   });
 });
 
 // PUT /users/:id
 // Update a user
-router.put('/:id', function(req, res) {
-  User.update(req.params.id, req.body, function(err, user) {
+router.put('/:id', bodyParser.json(), function(req, res) {
+  var updateFields = req.body;
+  User.findByIdAndUpdate({_id: req.params.id}, {$set: updateFields}, function(err, user) {
     if (err) {
       return res.status(500).json({
         error: "Error finding user: " + err
@@ -77,17 +68,15 @@ router.put('/:id', function(req, res) {
 
 // POST /users
 // Create a user
-router.post('/', function(req, res) {
-  User.save(req.body, function(err, user) {
+router.post('/', bodyParser(), function(req, res) {
+  var user = new User(req.body);
+  user.save(function(err, user) {
     if (err) {
       return res.status(500).json({
         error: "Error creating user: " + err
       });
     }
-    if (!user) {
-      return res.status(404).send("User does not exist: " + err);
-    }
-    return res.json(user);
+    res.json(user);
   });
 });
 
