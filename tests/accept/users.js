@@ -58,4 +58,63 @@ describe('Users', function() {
       });
     });
   });
+
+  describe('/DELETE users/:id', function() {
+    it('should delete a single user', function(done) {
+      // Find a user in the DB
+      User.findOne({}, function(err, user) {
+        var id = user._id;
+
+        // Delete this user by id
+        chai.request(url)
+          .delete('/users/' + id)
+          .end(function(err, res) {
+            res.should.have.status(200);
+            expect(res.body).to.be.eql('User deleted!');
+            User.findOne({_id: id}, function(err, user) {
+              expect(user).to.be.eql(null);
+              done();
+            });
+          });
+      });
+    });
+  });
+
+  describe('/PUT users/:id', function() {
+    it('should update a single user', function(done) {
+      // Find a user in the DB
+      User.findOne({}, function(err, user) {
+        var id = user._id;
+
+        // Update this user by id
+        chai.request(url)
+          .put('/users/' + id)
+          .send({ email: 'update@example.com' })
+          .end(function(err, res) {
+            res.should.have.status(200);
+            expect(res.body).to.be.a('object');
+            expect(res.body.email).to.be.eql('update@example.com');
+            done();
+          });
+      });
+    });
+  });
+
+  describe('/POST users/', function() {
+    it('should create a single user', function(done) {
+      var testUser = {'username': 'newuser', 'password': 'newpassword'};
+
+      // Create testUser
+      chai.request(url)
+      .post('/users')
+      .send(testUser)
+      .end(function(err, res) {
+        res.should.have.status(200);
+        expect(res.body).to.be.a('object');
+        expect(res.body.username).to.be.eql('newuser');
+        expect(res.body.password).to.be.eql('newpassword');
+        done();
+      });
+    });
+  });
 });

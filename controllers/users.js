@@ -54,6 +54,7 @@ router.delete('/:id', function(req, res) {
           error: "Error deleting user: " + err
         });
       }
+      return res.body("User deleted!");
     });
   });
 });
