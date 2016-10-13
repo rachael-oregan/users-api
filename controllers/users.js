@@ -1,6 +1,8 @@
 var User = require('../models/user');
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
+var logger = require('winston');
 
 
 // GET /users
@@ -34,6 +36,29 @@ router.get('/:id', function(req, res) {
     }
 
     res.json(user);
+  });
+});
+
+// DELETE /users/:id
+// Delete a user by id
+router.delete('/:id', function(req, res) {
+  User.findOne(req.params.id, function(err, user) {
+    if (err) {
+      return res.status(404).json({
+        error: "Error reading user: " + err
+      });
+    }
+    if (!user) {
+      return res.status(404).send(err);
+    }
+    res.json(user);
+    user.remove(function(err) {
+      if (err) {
+        return res.status(404).json({
+          error: "Error deleting user: " + err
+        });
+      }
+    });
   });
 });
 
