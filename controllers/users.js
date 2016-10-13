@@ -53,7 +53,7 @@ router.delete('/:id', function(req, res) {
 // Update a user
 router.put('/:id', bodyParser.json(), function(req, res) {
   var updateFields = req.body;
-  User.findByIdAndUpdate({_id: req.params.id}, {$set: updateFields}, function(err, user) {
+  User.findByIdAndUpdate({_id: req.params.id}, {$set: updateFields}, {new: true}, function(err, user) {
     if (err) {
       return res.status(500).json({
         error: "Error finding user: " + err
